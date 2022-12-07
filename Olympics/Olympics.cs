@@ -47,18 +47,17 @@ public class Olympics : IOlympics
     }
 
     public int CompetitionsCount()
-    {
-        throw new NotImplementedException();
-    }
+        => competitionsByName.Keys.Count;
 
     public int CompetitorsCount()
-    {
-        throw new NotImplementedException();
-    }
+        => competitorsByName.Keys.Count;
 
     public bool Contains(int competitionId, Competitor comp)
     {
-        throw new NotImplementedException();
+        var competitionName = competitionsById[competitionId];
+        var competition = competitionsByName[competitionName];
+
+        return competition.Competitors.Contains(comp);
     }
 
     public void Disqualify(int competitionId, int competitorId)
@@ -77,20 +76,22 @@ public class Olympics : IOlympics
     }
 
     public IEnumerable<Competitor> FindCompetitorsInRange(long min, long max)
-    {
-        throw new NotImplementedException();
-    }
+        => competitorsByName.Values.Where(c => c.TotalScore > min && c.TotalScore <= max);
 
     public IEnumerable<Competitor> GetByName(string name)
-        => (IEnumerable<Competitor>)competitorsByName.Keys.Where(c => c == name);
+        => competitorsByName.Values.Where(c => c.Name == name);
 
     public Competition GetCompetition(int id)
     {
-        throw new NotImplementedException();
+        if (!competitionsById.ContainsKey(id))
+        {
+            throw new ArgumentException();
+        }
+
+        var competitionName = competitionsById[id];
+        return competitionsByName[competitionName];
     }
 
     public IEnumerable<Competitor> SearchWithNameLength(int min, int max)
-    {
-        throw new NotImplementedException();
-    }
+        => competitorsByName.Values.Where(c => c.Name.Length >= min && c.Name.Length <= max).OrderBy(c => c.Id);
 }
