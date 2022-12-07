@@ -2,14 +2,31 @@
 using System.Collections.Generic;
 public class Olympics : IOlympics
 {
-    public void AddCompetition(int id, string name, int participantsLimit)
+    private Dictionary<string, Competitor> competitorsByName = new Dictionary<string, Competitor>();
+    private Dictionary<string, Competition> competitionsByName = new Dictionary<string, Competition>();
+    private Dictionary<int, string> competitorsById = new Dictionary<int, string>();
+    private Dictionary<int, string> competitionsById = new Dictionary<int, string>();
+
+    public void AddCompetition(int id, string name, int score)
     {
-        throw new NotImplementedException();
+        if (!competitionsById.ContainsKey(id))
+        {
+            throw new ArgumentException();
+        }
+
+        competitionsById.Add(id, name);
+        competitionsByName.Add(name, new Competition(name, id, score));
     }
 
     public void AddCompetitor(int id, string name)
     {
-        throw new NotImplementedException();
+        if (competitorsById.ContainsKey(id))
+        {
+            throw new ArgumentException();
+        }
+
+        competitorsById.Add(id, name);
+        competitorsByName.Add(name, new Competitor(id, name));
     }
 
     public void Compete(int competitorId, int competitionId)
