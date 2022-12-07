@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 public class Olympics : IOlympics
 {
     private Dictionary<string, Competitor> competitorsByName = new Dictionary<string, Competitor>();
@@ -31,7 +33,17 @@ public class Olympics : IOlympics
 
     public void Compete(int competitorId, int competitionId)
     {
-        throw new NotImplementedException();
+        if (!competitorsById.ContainsKey(competitorId) || !competitionsById.ContainsKey(competitionId))
+        {
+            throw new ArgumentException();
+        }
+
+        var competitorName = competitorsById[competitorId];
+        var competitionName = competitionsById[competitionId];
+        var competitor = competitorsByName[competitorName];
+        var competition = competitionsByName[competitionName];
+
+        competition.Competitors.Add(competitor);
     }
 
     public int CompetitionsCount()
@@ -51,7 +63,17 @@ public class Olympics : IOlympics
 
     public void Disqualify(int competitionId, int competitorId)
     {
-        throw new NotImplementedException();
+        if (!competitionsById.ContainsKey(competitionId) || !competitorsById.ContainsKey(competitorId))
+        {
+            throw new ArgumentException();
+        }
+
+        var competitionName = competitionsById[competitionId];
+        var competition = competitionsByName[competitionName];
+        var competitorName = competitorsById[competitorId];
+        var competitor = competitorsByName[competitorName];
+
+        competition.Competitors.Remove(competitor);
     }
 
     public IEnumerable<Competitor> FindCompetitorsInRange(long min, long max)
@@ -60,9 +82,7 @@ public class Olympics : IOlympics
     }
 
     public IEnumerable<Competitor> GetByName(string name)
-    {
-        throw new NotImplementedException();
-    }
+        => (IEnumerable<Competitor>)competitorsByName.Keys.Where(c => c == name);
 
     public Competition GetCompetition(int id)
     {
